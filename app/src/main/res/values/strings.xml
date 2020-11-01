@@ -6,4 +6,19 @@
     <string name="btnFirewall">Firewall</string>
     <string name="btnNetwork">Network status</string>
     <string name="btnActivity">Activity</string>
+    <string name="task_manager">Task Manager</string>
+    <string name="active_task">Active Task</string>
+    <string name="available_total_ram">Available/Total Ram</string>
+    <string name="user_activity">User Activity</string>
+    <string name="loading">Loading</string>
+    <string name="setting">Settings</string>
+    <string name="select_all">Select All</string>
+    <string name="not_select">Not Select</string>
+    <string name="clear_all">Clear All</string>
+    <string name="task_info">Task Info</string>
+    <string name="ram_used">Ram Used</string>
+    <string name="task_icon">task_icon</string>
+    <string name="activity_setting">Activity Setting</string>
+    <string name="status_show_system_activities">Status: show system activities</string>
+    <string name="status_keep_activities_when_screen_locked">Status: keep activities when screen locked</string>
 </resources>
