@@ -1,32 +1,19 @@
 package com.example.amg_system.domain;
 
-/**
- * Created by FANGYI on 2016/6/17.
- */
-
 import android.graphics.drawable.Drawable;
 
 /**
- * 代表一个进程
+ * Single task info
  */
 public class TaskInfo {
     private Drawable icon;
     private String name;
     private String packname;
 
-    /**
-     * 单位byte
-     */
     private long meninfosize;
-    /**
-     * true用户进程
-     * false系统进程
-     */
+
     private boolean isUser;
-    /**
-     * true被选中
-     * false未被选中
-     */
+
     private boolean isChecked;
 
     public boolean isChecked() {

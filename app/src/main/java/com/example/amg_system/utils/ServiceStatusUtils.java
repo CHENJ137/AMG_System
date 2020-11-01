@@ -5,28 +5,23 @@ import android.content.Context;
 
 import java.util.List;
 
-/**
- * 校验某个服务是否运行中
- * Created by FANGYI on 2016/6/6.
- */
 public class ServiceStatusUtils {
 
     /**
-     * 校验某个服务是否运行中
+     * Check if service is running
      *
      * @param context
-     * @param serviceName 要校验服务的全类名
-     * @return 如果运行就返回true，否则返回false
+     * @param serviceName
+     * @return boolean
      */
 
     public static boolean inRunningService(Context context, String serviceName) {
         //ActivityManager
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
-        List<ActivityManager.RunningServiceInfo> serviceInfos = am.getRunningServices(100);//参数的意思是最近的100个服务
+        List<ActivityManager.RunningServiceInfo> serviceInfos = am.getRunningServices(100);
 
         for (ActivityManager.RunningServiceInfo service : serviceInfos) {
-            //得到全类名称
             String name = service.service.getClassName();
             if (serviceName.equals(name)) {
                 return true;

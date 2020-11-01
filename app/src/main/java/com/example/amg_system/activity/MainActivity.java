@@ -1,6 +1,5 @@
 package com.example.amg_system.activity;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -22,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         btnActivity = findViewById(R.id.button4);
         btnActivity.setOnClickListener(new View.OnClickListener() {
             Intent intent;
+
             @Override
             public void onClick(View view) {
                 intent = new Intent(MainActivity.this, TaskManager.class);

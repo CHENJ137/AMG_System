@@ -3,16 +3,16 @@ package com.example.amg_system.activity.task;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-//import androidx.annotation.RequiresApi;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.Nullable;
+
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.example.amg_system.R;
 import com.example.amg_system.service.KillProcessService;
 import com.example.amg_system.utils.ServiceStatusUtils;
-//import com.socks.library.KLog;
 
 public class TaskManagerSettingActivity extends AppCompatActivity {
     private CheckBox cbShowSystemProcess;
@@ -31,18 +31,18 @@ public class TaskManagerSettingActivity extends AppCompatActivity {
 
         boolean showsystem = sp.getBoolean("showsystem", true);
         if (showsystem) {
-            cbShowSystemProcess.setText("当前状态：显示系统进程");
+            cbShowSystemProcess.setText("Status: show system activities");
         } else {
-            cbShowSystemProcess.setText("当前状态：隐藏系统进程");
+            cbShowSystemProcess.setText("Status: hide system activities");
         }
         cbShowSystemProcess.setChecked(showsystem);
         cbShowSystemProcess.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    cbShowSystemProcess.setText("当前状态：显示系统进程");
+                    cbShowSystemProcess.setText("Status: show system activities");
                 } else {
-                    cbShowSystemProcess.setText("当前状态：隐藏系统进程");
+                    cbShowSystemProcess.setText("Status: show system activities");
                 }
 
                 SharedPreferences.Editor editor = sp.edit();
@@ -53,12 +53,11 @@ public class TaskManagerSettingActivity extends AppCompatActivity {
 
 
         killProcessIntent = new Intent(this, KillProcessService.class);
-        boolean inRunningService = ServiceStatusUtils.inRunningService(this, "com.fangyi.mobilesafe.service.KillProcessService");
-        //检测服务是否开启
+        boolean inRunningService = ServiceStatusUtils.inRunningService(this, "com.example.amg_system.service.KillProcessService");
         if (inRunningService) {
-            cbKillProcess.setText("当前状态：锁屏杀死后台");
+            cbKillProcess.setText("Status: kill activities when screen locked");
         } else {
-            cbKillProcess.setText("当前状态：锁屏不杀后台");
+            cbKillProcess.setText("Status: keep activities when screen locked");
         }
     }
 

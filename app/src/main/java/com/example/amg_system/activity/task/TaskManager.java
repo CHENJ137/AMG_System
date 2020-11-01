@@ -45,13 +45,13 @@ public class TaskManager extends AppCompatActivity {
     private LinearLayout llTaskLoading;
     private TextView tvTaskStatus;
 
-    private List<TaskInfo> taskInfos;//所有在运行的进程列表
-    private List<TaskInfo> systemtaskInfos;//系统运行的进程列表
-    private List<TaskInfo> usertaskInfos;//用户运行的进程列表
+    private List<TaskInfo> taskInfos;//all active activities list
+    private List<TaskInfo> systemtaskInfos;//system active activities list
+    private List<TaskInfo> usertaskInfos;//user active activities list
 
-    private int runningProcessConut;//系统运行进程
-    private long availRam;//可用内存
-    private long totalRam;//总内存
+    private int runningProcessConut;//system active activities
+    private long availRam;//available ram
+    private long totalRam;//total ram
 
     private TaskInfoAdapter adapter;
     private ActivityManager am;
@@ -69,10 +69,10 @@ public class TaskManager extends AppCompatActivity {
                     break;
                 case 1:
 
-                    tvRunProcessCount.setText("运行中进程：" + msg.getData().getInt("runningProcessConut") + "个");
-                    tvAvailRam.setText("剩余/总内存：" + Formatter.formatFileSize(TaskManager.this, msg.getData().getLong("availRam")) + "/" + Formatter.formatFileSize(TaskManager.this, totalRam));
-                    Toast.makeText(TaskManager.this, "杀死了：" + msg.getData().getInt("killedCount") +
-                            "个进程，释放了" + Formatter.formatFileSize(TaskManager.this, msg.getData().getLong("addRam")) + "M内存", Toast.LENGTH_SHORT).show();
+                    tvRunProcessCount.setText("Active activities：" + msg.getData().getInt("runningProcessConut") + "个");
+                    tvAvailRam.setText("Available/Total Ram：" + Formatter.formatFileSize(TaskManager.this, msg.getData().getLong("availRam")) + "/" + Formatter.formatFileSize(TaskManager.this, totalRam));
+                    Toast.makeText(TaskManager.this, "Killed：" + msg.getData().getInt("killedCount") +
+                            "activies, release" + Formatter.formatFileSize(TaskManager.this, msg.getData().getLong("addRam")) + "M Ram", Toast.LENGTH_SHORT).show();
 
                     adapter.notifyDataSetChanged();
                     break;
@@ -101,12 +101,11 @@ public class TaskManager extends AppCompatActivity {
         totalRam = SystemInfoUtils.getTotalRam(this);
 
 
-        tvRunProcessCount.setText("运行中进程：" + runningProcessConut + "个");
-        tvAvailRam.setText("剩余/总内存：" + Formatter.formatFileSize(this, availRam) + "/" + Formatter.formatFileSize(this, totalRam));
+        tvRunProcessCount.setText("Active activities：" + runningProcessConut);
+        tvAvailRam.setText("Available/Total Ram: " + Formatter.formatFileSize(this, availRam) + "/" + Formatter.formatFileSize(this, totalRam));
 
         fillData();
 
-        //设置一整条的点击事件
         lvTaskmanger.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -118,7 +117,7 @@ public class TaskManager extends AppCompatActivity {
                         return;
                     }
                     if (taskInfo.isChecked()) {
-                        //选中
+                        //select
                         taskInfo.setChecked(false);
                         checkBox.setChecked(false);
                     } else {
@@ -132,7 +131,7 @@ public class TaskManager extends AppCompatActivity {
         });
 
         /**
-         * 监听滚动
+         * Scroll listener
          */
         lvTaskmanger.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -148,11 +147,9 @@ public class TaskManager extends AppCompatActivity {
                 }
 
                 if (firstVisibleItem > usertaskInfos.size()) {
-                    //显示系统程序
-                    tvTaskStatus.setText("系统进程(" + systemtaskInfos.size() + ")");
+                    tvTaskStatus.setText("System Activities(" + systemtaskInfos.size() + ")");
                 } else {
-                    //用户程序
-                    tvTaskStatus.setText("用户进程(" + usertaskInfos.size() + ")");
+                    tvTaskStatus.setText("User Activities(" + usertaskInfos.size() + ")");
                 }
             }
         });
@@ -161,7 +158,7 @@ public class TaskManager extends AppCompatActivity {
     }
 
     /**
-     * 加载数据
+     * Load data
      */
     private void fillData() {
         llTaskLoading.setVisibility(View.VISIBLE);
@@ -173,10 +170,8 @@ public class TaskManager extends AppCompatActivity {
                 usertaskInfos = new ArrayList<TaskInfo>();
                 for (TaskInfo taskInfo : taskInfos) {
                     if (taskInfo.isUser()) {
-                        //用户进程
                         usertaskInfos.add(taskInfo);
                     } else {
-                        //系统进程
                         systemtaskInfos.add(taskInfo);
                     }
                 }
@@ -187,7 +182,7 @@ public class TaskManager extends AppCompatActivity {
 
 
     /**
-     * 填充数据
+     * Fill data
      */
     private class TaskInfoAdapter extends BaseAdapter {
 
@@ -236,11 +231,10 @@ public class TaskManager extends AppCompatActivity {
             } else if (position == usertaskInfos.size() + 1) {
                 TextView tv = new TextView(TaskManager.this);
                 tv.setBackgroundColor(Color.GRAY);
-                tv.setText("系统进程(" + systemtaskInfos.size() + ")");
+                tv.setText("System activities(" + systemtaskInfos.size() + ")");
                 tv.setTextColor(Color.WHITE);
                 return tv;
             } else if (position <= usertaskInfos.size()) {
-                //用户进程
                 int newposition = position - 1;
                 taskInfo = usertaskInfos.get(newposition);
             } else {
@@ -261,20 +255,15 @@ public class TaskManager extends AppCompatActivity {
                 viewholder.ivTaskIcon = (ImageView) view.findViewById(R.id.iv_task_icon);
                 viewholder.cb_status = (CheckBox) view.findViewById(R.id.cr_taskmanager_status);
 
-                //把对应关系保存起来
                 view.setTag(viewholder);
             }
-            //根据位置得到进程信息
-//            taskInfo = taskInfos.get(position);
             viewholder.tvTaskName.setText(taskInfo.getName());
             viewholder.tvMeninFoSize.setText(Formatter.formatFileSize(TaskManager.this, taskInfo.getMeninfosize()));
             viewholder.ivTaskIcon.setImageDrawable(taskInfo.getIcon());
 
             if (taskInfo.isChecked()) {
-                //被选中 - 显示出来
                 viewholder.cb_status.setChecked(true);
             } else {
-                //没有被勾选
                 viewholder.cb_status.setChecked(false);
             }
 
@@ -295,13 +284,6 @@ public class TaskManager extends AppCompatActivity {
         CheckBox cb_status;
     }
 
-
-    /**
-     * 全选按钮
-     *
-     * @param view
-     */
-
     public void selectAll(View view) {
         for (TaskInfo usertaskInfo : usertaskInfos) {
             if (getPackageName().equals(usertaskInfo.getPackname())) {
@@ -314,19 +296,10 @@ public class TaskManager extends AppCompatActivity {
             systemtaskInfo.setChecked(true);
 
         }
-
-        /**
-         * 刷新UI
-         */
         adapter.notifyDataSetChanged();
 
     }
 
-    /**
-     * 反选
-     *
-     * @param view
-     */
     public void unSelect(View view) {
         for (TaskInfo usertaskInfo : usertaskInfos) {
             if (getPackageName().equals(usertaskInfo.getPackname())) {
@@ -338,28 +311,19 @@ public class TaskManager extends AppCompatActivity {
         for (TaskInfo systemtaskInfo : systemtaskInfos) {
             systemtaskInfo.setChecked(!systemtaskInfo.isChecked());
         }
-
-        /**
-         * 刷新UI
-         */
         adapter.notifyDataSetChanged();//getCount() -- getView()
     }
 
-    /**
-     * 一键清理
-     *
-     * @param view
-     */
     public void killAll(View view) {
 
         final ProgressDialog dialog = new ProgressDialog(TaskManager.this);
-        dialog.setMessage("正在清理中...");
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);//样式更改为水平，微调式
+        dialog.setMessage("Cleaning...");
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.show();
 
         new Thread() {
-            int killedCount = 0;//杀死进程数
-            long addRam = 0;//剩余增加
+            int killedCount = 0;
+            long addRam = 0;
 
             List<TaskInfo> killedTaskInfo = new ArrayList<>();
 
@@ -368,8 +332,6 @@ public class TaskManager extends AppCompatActivity {
 
                 for (TaskInfo usertaskInfo : usertaskInfos) {
                     if (usertaskInfo.isChecked()) {
-                        //把进程杀死 - 自杀
-//                android.os.Process.killProcess(android.os.Process.myPid());过时
                         am.killBackgroundProcesses(usertaskInfo.getPackname());
                         killedTaskInfo.add(usertaskInfo);
                         killedCount++;
@@ -381,7 +343,6 @@ public class TaskManager extends AppCompatActivity {
                 for (TaskInfo systemtaskInfo : systemtaskInfos) {
 
                     if (systemtaskInfo.isChecked()) {
-                        //把进程杀死
                         am.killBackgroundProcesses(systemtaskInfo.getPackname());
                         killedTaskInfo.add(systemtaskInfo);
                         killedCount++;
@@ -422,11 +383,6 @@ public class TaskManager extends AppCompatActivity {
 //        fillData();
     }
 
-    /**
-     * 设置
-     *
-     * @param view
-     */
     public void ReEnterSetting(View view) {
         Intent intent = new Intent(TaskManager.this, TaskManagerSettingActivity.class);
         startActivityForResult(intent, 0);
